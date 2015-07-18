@@ -32,11 +32,7 @@ public class UberCar extends JComponent{
 	}
 	
 	public void paint(Graphics g) {
-		Graphics2D g2d = (Graphics2D)g;
-		g2d.translate(this.getX() + 11, this.getY() + 10);
-		g2d.rotate(1.57); //1.57
-		g2d.drawImage(image, 140, 0, null);
-		//g.drawImage(image, 95, 20, null);
+		g.drawImage(image, 95, 20, null);
 	}
 	
 	public void paintComponent(Graphics g){
@@ -45,6 +41,7 @@ public class UberCar extends JComponent{
 				break;
 			case RIGTH:
 				Graphics2D g2d = (Graphics2D)g;
+				System.out.println("RIGTH");
 				g2d.translate(this.getX() + 11, this.getY() + 10);
 				g2d.rotate(1.57); //1.57
 				g2d.drawImage(image, 0, 0, null);
