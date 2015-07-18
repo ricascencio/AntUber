@@ -1,0 +1,55 @@
+package edu.ia.ant;
+
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+
+public class TaxiCar extends JComponent{
+
+	private BufferedImage image;
+	public enum Direction {LEFT, RIGTH};
+	private Direction turn;
+	
+	TaxiCar(){
+		try {
+			image = ImageIO.read(this.getClass().getResource("/images/taxiCar8.png"));
+			turn = Direction.RIGTH;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void setDirection(){
+		this.turn = Direction.RIGTH;
+	}
+	
+	public void paint(Graphics g) {
+		g.drawImage(image, 300, 20, null);
+	}
+	
+	public void paintComponent(Graphics g){
+		switch(turn){
+			case LEFT:
+				break;
+			case RIGTH:
+				Graphics2D g2d = (Graphics2D)g;
+				System.out.println("RIGTH");
+				g2d.translate(this.getX() + 11, this.getY() + 10);
+				g2d.rotate(1.57); //1.57
+				g2d.drawImage(image, 0, 0, null);
+				break;
+		}
+		
+		
+		
+	}
+	
+}

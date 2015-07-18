@@ -13,9 +13,14 @@ public class Main {
 		myFrame.setVisible(true);
 		JPanel panel = (JPanel) myFrame.getContentPane();
 		UberCar uber = new UberCar();
+		TaxiCar taxi = new TaxiCar();
+		panel.add(taxi);
+		panel.revalidate();
+		panel.repaint();
 		panel.add(uber);
 		
-		uber.setDirection();
+		//uber.setDirection();
+		uber.repaint();
 		panel.revalidate();
 		panel.repaint();
 	}
