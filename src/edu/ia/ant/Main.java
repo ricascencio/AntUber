@@ -2,8 +2,6 @@ package edu.ia.ant;
 
 import javax.swing.JPanel;
 
-import edu.ia.ant.UberFrame.City;
-
 public class Main {
 
 	public static void main(String[] args) {
@@ -12,17 +10,25 @@ public class Main {
 		UberFrame myFrame = new UberFrame();
 		myFrame.setVisible(true);
 		JPanel panel = (JPanel) myFrame.getContentPane();
-		UberCar uber = new UberCar();
-		TaxiCar taxi = new TaxiCar();
+		UberCar uber = new UberCar(95, 20);
+		TaxiCar taxi = new TaxiCar(200, 100);
 		panel.add(taxi);
-		panel.revalidate();
-		panel.repaint();
+		panel.validate();
 		panel.add(uber);
-		
-		//uber.setDirection();
-		uber.repaint();
-		panel.revalidate();
-		panel.repaint();
+		panel.validate();
+		uber.turn(Car.Direction.BACK);
+		uber.move();
+		uber.move();
+		uber.move();
+		uber.move();
+		uber.move();
+		uber.move();
+		uber.move();
+		uber.turn(Car.Direction.LEFT);
+		uber.move();
+		uber.move();
+		uber.move();
+		panel.validate();
 	}
 
 }
