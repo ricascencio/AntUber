@@ -17,18 +17,17 @@ public class Main {
 		panel.add(uber);
 		panel.validate();
 		uber.turn(Car.Direction.BACK);
-		uber.move();
-		uber.move();
-		uber.move();
-		uber.move();
-		uber.move();
-		uber.move();
-		uber.move();
-		uber.turn(Car.Direction.LEFT);
-		uber.move();
-		uber.move();
-		uber.move();
-		panel.validate();
+		int i =0;
+		while(i<=10){
+			uber.move();
+			i+=1;
+			if(i== 7)
+				uber.turn(Car.Direction.LEFT);
+			try{
+                Thread.sleep(100);
+            } catch (Exception exc){}
+            myFrame.repaint();
+		}
 	}
 
 }
