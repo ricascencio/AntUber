@@ -18,6 +18,7 @@ public class UberFrame extends JFrame {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
+		
 
 		public void paint(Graphics g) {
 			g.drawRect(10, 10, 70, 75);
