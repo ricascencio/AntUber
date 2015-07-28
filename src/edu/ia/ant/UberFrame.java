@@ -1,10 +1,18 @@
 package edu.ia.ant;
 
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 public class UberFrame extends JFrame {
 
@@ -12,6 +20,8 @@ public class UberFrame extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private JPopupMenu popUpMenu;
+	private JMenu addMenu;
 
 	class City extends JComponent {
 		/**
@@ -82,7 +92,64 @@ public class UberFrame extends JFrame {
 		setSize(1000, 700);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		JPanel panel = (JPanel) getContentPane();
+		popUpMenu = new JPopupMenu();
+		popUpMenu.setSize(100, 250);
+		addMenu = new JMenu("Add");
+		JMenuItem taxiMenu = new JMenuItem("Taxi", new ImageIcon(this.getClass().getResource("/images/taxiCar8.png")));
+		taxiMenu.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println(e.getActionCommand());
+				
+			}
+			
+		});
+		JMenuItem carMenu = new JMenuItem("Car", new ImageIcon(this.getClass().getResource("/images/blueCar8.png")));
+		carMenu.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println(e.getActionCommand());
+				
+			}
+			
+		});
+		addMenu.add(taxiMenu);
+		addMenu.add(carMenu);
+		addMenu.add(new JMenuItem("Zombies", new ImageIcon(this.getClass().getResource("/images/zombies.jpg"))));
+		popUpMenu.add(addMenu);
+		popUpMenu.add(new JMenuItem(".. to here"));
 		panel.add(new City());
+		addMouseListener(new MouseListener(){
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				showPopUp(e);
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			
+			private void showPopUp(MouseEvent e){
+				popUpMenu.show(e.getComponent(), e.getX(), e.getY());
+				popUpMenu.setVisible(true);
+			}
+		});
 	}
+	
+	
 
 }
