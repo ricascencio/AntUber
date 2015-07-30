@@ -22,6 +22,8 @@ public class UberFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPopupMenu popUpMenu;
 	private JMenu addMenu;
+	private int mouseX, mouseY;
+	private UberCar uber;
 
 	class City extends JComponent {
 		/**
@@ -91,7 +93,7 @@ public class UberFrame extends JFrame {
 		setTitle("Uber environment");
 		setSize(1000, 700);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		JPanel panel = (JPanel) getContentPane();
+		final JPanel panel = (JPanel) getContentPane();
 		popUpMenu = new JPopupMenu();
 		popUpMenu.setSize(100, 250);
 		addMenu = new JMenu("Add");
@@ -100,26 +102,52 @@ public class UberFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(e.getActionCommand());
-				
+				TaxiCar taxi = new TaxiCar(mouseX, mouseY);
+				panel.add(taxi);
+				panel.validate();
 			}
 			
 		});
-		JMenuItem carMenu = new JMenuItem("Car", new ImageIcon(this.getClass().getResource("/images/blueCar8.png")));
+		JMenuItem carMenu = new JMenuItem("Car", new ImageIcon(this.getClass().getResource("/images/redCar8.png")));
 		carMenu.addActionListener(new ActionListener(){
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println(e.getActionCommand());
-				
+				Car blueCar = new Car(mouseX, mouseY);
+				panel.add(blueCar);
+				panel.validate();
+			}
+			
+		});
+		JMenuItem zombiesMenu = new JMenuItem("Zombies");
+		zombiesMenu.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				ZombieHorde zombieHorde = new ZombieHorde(mouseX, mouseY);
+				panel.add(zombieHorde);
+				panel.validate();
 			}
 			
 		});
 		addMenu.add(taxiMenu);
 		addMenu.add(carMenu);
-		addMenu.add(new JMenuItem("Zombies", new ImageIcon(this.getClass().getResource("/images/zombies.jpg"))));
+		addMenu.add(zombiesMenu);
 		popUpMenu.add(addMenu);
-		popUpMenu.add(new JMenuItem(".. to here"));
+		JMenuItem fromItem = new JMenuItem(".. from here");
+		fromItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if(uber != null)
+					panel.remove(uber);
+				uber = new UberCar(mouseX, mouseY);
+				panel.add(uber);
+				panel.validate();
+			}
+		});
+		JMenuItem toItem = new JMenuItem(".. to here");
+		popUpMenu.add(fromItem);
+		popUpMenu.add(toItem);
 		panel.add(new City());
 		addMouseListener(new MouseListener(){
 			@Override
@@ -144,7 +172,9 @@ public class UberFrame extends JFrame {
 			}
 			
 			private void showPopUp(MouseEvent e){
-				popUpMenu.show(e.getComponent(), e.getX(), e.getY());
+				mouseX = e.getX();
+				mouseY = e.getY() - 25;
+				popUpMenu.show(e.getComponent(), mouseX, mouseY);
 				popUpMenu.setVisible(true);
 			}
 		});

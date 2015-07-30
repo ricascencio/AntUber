@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 import edu.ia.ant.utils.ImageUtils;
@@ -58,7 +59,7 @@ public class Car extends JComponent{
 	protected Orientation orientation;
 	private static Map<Orientation, Compass> orientations;
 	
-	protected Car(int x, int y){
+	static{
 		Compass north = new Compass(Orientation.NORTH, Orientation.WEST, Orientation.EAST, Orientation.SOUTH);
 		Compass east = new Compass(Orientation.EAST, Orientation.NORTH, Orientation.SOUTH, Orientation.WEST);
 		Compass south = new Compass(Orientation.SOUTH, Orientation.EAST, Orientation.WEST, Orientation.NORTH);
@@ -68,9 +69,18 @@ public class Car extends JComponent{
 		orientations.put(Orientation.EAST, east);
 		orientations.put(Orientation.SOUTH, south);
 		orientations.put(Orientation.WEST, west);
+	}
+	
+	protected Car(int x, int y){
 		orientation = Orientation.NORTH;
 		this.x = x;
 		this.y = y;
+		try {
+			image = ImageIO.read(this.getClass().getResource("/images/redCar8.png"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void paint(Graphics g) {
