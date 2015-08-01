@@ -39,7 +39,7 @@ public class AntColony {
 
   /*------------------------------------------------------------------*/
 
-  public AntColony (TSP tsp, int antcnt)
+  public AntColony (TSP tsp, int antcnt, Random rand)
   {                             /* --- create an ant colony */
     this.tsp     = tsp;         /* note traveling salesman problem */
     this.dists   = tsp.dists;   /* and its distance matrix */
@@ -54,6 +54,7 @@ public class AntColony {
     this.best    = new int[size]; this.bestlen = Double.MAX_VALUE;
     this.dsts    = new int[size];
     this.sums    = new double[size];
+    this.rand    = rand;        /* store the random number generator */
     this.antcnt  = antcnt;      /* note the number of ants and */
     this.exploit = 0.0;         /* prob. for exploiting best edge */
     this.alpha   = 1.0;         /* weighting exponents for */

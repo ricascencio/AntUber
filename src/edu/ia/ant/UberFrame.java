@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -147,10 +147,17 @@ public class UberFrame extends JFrame {
 				panel.add(uber);
 				panel.validate();
 				TSP tsp = new TSP();
-				initAnts(30, 1, tsp);
+				initAnts(30, 1, tsp, new Random(1));
 			}
 		});
 		JMenuItem toItem = new JMenuItem(".. to here");
+		toItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				runAnts();
+			}
+		});
 		popUpMenu.add(fromItem);
 		popUpMenu.add(toItem);
 		panel.add(new City());
@@ -187,18 +194,18 @@ public class UberFrame extends JFrame {
 	
 	/*------------------------------------------------------------------*/
 
-	  public void initAnts (int antcnt, double phero, TSP tsp)
-	  {                             /* --- initialize an ant colony */
-	    this.antCol = new AntColony(tsp, antcnt);
-	    this.antCol.init(phero);      /* create and init. an ant colony */
-	    this.repaint();             /* and redraw the TSP */
-	  }  /* initAnts() */
+	public void initAnts (int antcnt, double phero, TSP tsp, Random rand)
+	{                             /* --- initialize an ant colony */
+		this.antCol = new AntColony(tsp, antcnt, rand);
+		this.antCol.init(phero);      /* create and init. an ant colony */
+		this.repaint();             /* and redraw the TSP */
+	}  /* initAnts() */
 
-	  /*------------------------------------------------------------------*/
+  /*------------------------------------------------------------------*/
 
-	  public void setParams (double exploit, double alpha, double beta,
-	                         double trail, double elite, double evap)
-	  {                             /* --- set parameters */
+	public void setParams (double exploit, double alpha, double beta,
+                         double trail, double elite, double evap)
+	{                             /* --- set parameters */
 	    if (this.antCol == null) return;
 	    this.antCol.setExploit(exploit);
 	    this.antCol.setAlpha(alpha);
@@ -206,7 +213,18 @@ public class UberFrame extends JFrame {
 	    this.antCol.setTrail(trail);
 	    this.antCol.setElite(elite);
 	    this.antCol.setEvap(evap);
-	  }  /* setParams() */
-	
+	}  /* setParams() */
+  
+	public void runAnts ()
+	{                             /* --- run the ants */
+	    if (this.antCol == null) return;
+	    int i=0;
+	    while(i<=100){
+	    	i+=1;
+	    	this.antCol.runAllAnts();     /* run all ants once */
+	    }
+	    this.antCol.runAllAnts();     /* run all ants once */
+	    this.repaint();             /* and redraw the TSP */
+	}  /* runAnts() */
 
 }

@@ -28,7 +28,7 @@ private   boolean    valid;   /* flag for valid bounding box */
 
 public TSP () 
 {                             /* --- create a traveling salesman p. */
-  this.size   = 0;            /* initialize the variables */
+  
   this.xs     = new int[] {10, 100, 210, 320, 430, 540, 650, 760, 870, 980,
 		  					  10, 100, 210, 320, 430, 540, 650, 760, 870, 980,
 		  					  10, 100, 191, 301, 411, 521, 631, 741, 851, 961,
@@ -36,6 +36,8 @@ public TSP ()
 		  					  10, 100, 320, 430, 540, 650, 760, 870, 980,
 		  					  10, 100, 210, 320, 430, 540, 650, 760, 870, 980,
 		  					  10, 100, 210, 320, 430, 540, 650, 760, 870, 980};
+  
+  this.size   = this.xs.length;            /* initialize the variables */
   this.ys     = new int[] {10, 10, 10, 10, 10, 10, 10, 10, 10,
 		  					  102, 102, 102, 102, 102, 102, 102, 102, 102, 102,
 		  					  212, 212, 212, 212, 212, 212, 212, 212, 212, 212,
