@@ -223,8 +223,13 @@ public class UberFrame extends JFrame {
 	    	i+=1;
 	    	this.antCol.runAllAnts();     /* run all ants once */
 	    }
-	    this.antCol.runAllAnts();     /* run all ants once */
-	    this.repaint();             /* and redraw the TSP */
+	    this.repaint(); 
+	    /* and redraw the TSP */
+	    int[]  best = this.antCol.getBestTour();
+	    for(int j=0; j<best.length;j++){
+	    	System.out.print(best[j]+",");
+	    }
+	    
 	}  /* runAnts() */
 
 }
