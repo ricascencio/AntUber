@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -13,6 +14,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+
 
 public class UberFrame extends JFrame {
 
@@ -24,6 +26,7 @@ public class UberFrame extends JFrame {
 	private JMenu addMenu;
 	private int mouseX, mouseY;
 	private UberCar uber;
+	private AntColony antCol;
 
 	class City extends JComponent {
 		/**
@@ -143,6 +146,8 @@ public class UberFrame extends JFrame {
 				uber = new UberCar(mouseX, mouseY);
 				panel.add(uber);
 				panel.validate();
+				TSP tsp = new TSP();
+				initAnts(30, 1, tsp);
 			}
 		});
 		JMenuItem toItem = new JMenuItem(".. to here");
@@ -180,6 +185,28 @@ public class UberFrame extends JFrame {
 		});
 	}
 	
+	/*------------------------------------------------------------------*/
+
+	  public void initAnts (int antcnt, double phero, TSP tsp)
+	  {                             /* --- initialize an ant colony */
+	    this.antCol = new AntColony(tsp, antcnt);
+	    this.antCol.init(phero);      /* create and init. an ant colony */
+	    this.repaint();             /* and redraw the TSP */
+	  }  /* initAnts() */
+
+	  /*------------------------------------------------------------------*/
+
+	  public void setParams (double exploit, double alpha, double beta,
+	                         double trail, double elite, double evap)
+	  {                             /* --- set parameters */
+	    if (this.antCol == null) return;
+	    this.antCol.setExploit(exploit);
+	    this.antCol.setAlpha(alpha);
+	    this.antCol.setBeta(beta);
+	    this.antCol.setTrail(trail);
+	    this.antCol.setElite(elite);
+	    this.antCol.setEvap(evap);
+	  }  /* setParams() */
 	
 
 }
