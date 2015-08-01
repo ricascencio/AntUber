@@ -32,6 +32,10 @@ public class AntColony {
   protected double     evap;    /* pheromone evaporation factor */
   protected double     layexp;  /* pheromone laying exponent */
   protected double     elite;   /* best tour enhancement factor */
+  protected double 	   taxiFactor;
+  protected double     carFactor;
+  protected double     zombieFactor;
+  public static enum Factor {TAXI, CAR, ZOMBIES};
 
   private   Random     rand;    /* random number generator */
   private   int[]      dsts;    /* buffer for destinations */
@@ -61,6 +65,9 @@ public class AntColony {
     this.beta    = 1.0;         /* distance versus trail */
     this.evap    = 0.1;         /* pheromone evaporation factor */
     this.epoch   = 0;           /* initialize the epoch counter */
+    this.taxiFactor = 3.5;
+    this.carFactor  = 1.5;
+    this.zombieFactor = 5.0;
   }  /* AntColony() */
 
   /*------------------------------------------------------------------*/
@@ -113,6 +120,22 @@ public class AntColony {
 
   /*------------------------------------------------------------------*/
 
+  public void updateNears(int i, int j, Factor factor){
+	  double sum = 0.0;
+	  switch(factor){
+		  case TAXI:
+			  sum = taxiFactor;
+			  break;
+		  case CAR:
+			  sum = carFactor;
+			  break;
+		  case ZOMBIES:
+			  sum = zombieFactor;
+			  break;
+	  }
+	  this.nears[i][j] = Math.pow(this.dists[i][j] + sum, -this.beta);
+  }
+  
   private static int find (double vec[], int n, double val)
   {                             /* --- find edge based on random val. */
     int i, k;                   /* left and middle element */

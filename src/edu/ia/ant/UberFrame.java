@@ -106,6 +106,9 @@ public class UberFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				TaxiCar taxi = new TaxiCar(mouseX, mouseY);
+				int nodeX = mouseX < 40 ? 0 : 1 + (mouseX - 40) / 110;
+				int nodeY = mouseY < 42 ? 0 : 1 + (mouseY - 42) / 110;
+				antCol.updateNears(nodeX, nodeY, AntColony.Factor.TAXI);
 				panel.add(taxi);
 				panel.validate();
 			}
