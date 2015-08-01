@@ -6,7 +6,11 @@ public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("70 - 1 = " + Math.pow(70, -1.0));
+		System.out.println("71 - 1 = " + Math.pow(71, -1.0));
+		System.out.println("72 - 1 = " + Math.pow(72, -1.0));
+		System.out.println("73 - 1 = " + Math.pow(73, -1.0));
+		System.out.println("70 - .9 = " + Math.pow(70, 0.9));
 		UberFrame myFrame = new UberFrame();
 		myFrame.setVisible(true);
 		JPanel panel = (JPanel) myFrame.getContentPane();
