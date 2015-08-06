@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import javax.swing.ImageIcon;
@@ -25,6 +27,8 @@ public class UberFrame extends JFrame {
 	private JPopupMenu popUpMenu;
 	private JMenu addMenu;
 	private int mouseX, mouseY;
+	private int srcX, srcY, desX, desY;
+	private Map<String, Integer> nodes;
 	private UberCar uber;
 	private AntColony antCol;
 
@@ -93,6 +97,77 @@ public class UberFrame extends JFrame {
 	}
 
 	UberFrame() {
+		nodes = new HashMap<String, Integer>();
+		nodes.put("0,0", 0);
+		nodes.put("1,0", 1);
+		nodes.put("2,0", 2);
+		nodes.put("3,0", 3);
+		nodes.put("4,0", 4);
+		nodes.put("5,0", 5);
+		nodes.put("6,0", 6);
+		nodes.put("7,0", 7);
+		nodes.put("8,0", 8);
+		nodes.put("9,0", 9);
+		nodes.put("0,1", 10);
+		nodes.put("1,1", 11);
+		nodes.put("2,1", 12);
+		nodes.put("3,1", 13);
+		nodes.put("4,1", 14);
+		nodes.put("5,1", 15);
+		nodes.put("6,1", 16);
+		nodes.put("7,1", 17);
+		nodes.put("8,1", 18);
+		nodes.put("9,1", 19);
+		nodes.put("0,2", 20);
+		nodes.put("1,2", 21);
+		nodes.put("2,2", 22);
+		nodes.put("3,2", 23);
+		nodes.put("4,2", 24);
+		nodes.put("5,2", 25);
+		nodes.put("6,2", 26);
+		nodes.put("7,2", 27);
+		nodes.put("8,2", 28);
+		nodes.put("9,2", 29);
+		nodes.put("0,3", 30);
+		nodes.put("1,3", 31);
+		nodes.put("2,3", 31);
+		nodes.put("3,3", 32);
+		nodes.put("4,3", 33);
+		nodes.put("5,3", 34);
+		nodes.put("6,3", 34);
+		nodes.put("7,3", 35);
+		nodes.put("8,3", 36);
+		nodes.put("9,3", 37);
+		nodes.put("0,4", 38);
+		nodes.put("1,4", 39);
+		nodes.put("2,4", 39);
+		nodes.put("3,4", 40);
+		nodes.put("4,4", 41);
+		nodes.put("5,4", 42);
+		nodes.put("6,4", 43);
+		nodes.put("7,4", 44);
+		nodes.put("8,4", 45);
+		nodes.put("9,4", 46);
+		nodes.put("0,5", 47);
+		nodes.put("1,5", 48);
+		nodes.put("2,5", 49);
+		nodes.put("3,5", 50);
+		nodes.put("4,5", 51);
+		nodes.put("5,5", 52);
+		nodes.put("6,5", 53);
+		nodes.put("7,5", 54);
+		nodes.put("8,5", 55);
+		nodes.put("9,5", 56);
+		nodes.put("0,6", 57);
+		nodes.put("1,6", 58);
+		nodes.put("2,6", 59);
+		nodes.put("3,6", 60);
+		nodes.put("4,6", 61);
+		nodes.put("5,6", 62);
+		nodes.put("6,6", 63);
+		nodes.put("7,6", 64);
+		nodes.put("8,6", 65);
+		nodes.put("9,6", 66);
 		setTitle("Uber environment");
 		setSize(1000, 700);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -106,9 +181,7 @@ public class UberFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				TaxiCar taxi = new TaxiCar(mouseX, mouseY);
-				int nodeX = mouseX < 40 ? 0 : 1 + (mouseX - 40) / 110;
-				int nodeY = mouseY < 42 ? 0 : 1 + (mouseY - 42) / 110;
-				antCol.updateNears(nodeX, nodeY, AntColony.Factor.TAXI);
+				setElementOnNode(mouseX, mouseY, AntColony.Factor.TAXI);
 				panel.add(taxi);
 				panel.validate();
 			}
@@ -120,6 +193,7 @@ public class UberFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Car blueCar = new Car(mouseX, mouseY);
+				setElementOnNode(mouseX, mouseY, AntColony.Factor.CAR);
 				panel.add(blueCar);
 				panel.validate();
 			}
@@ -131,6 +205,7 @@ public class UberFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				ZombieHorde zombieHorde = new ZombieHorde(mouseX, mouseY);
+				setElementOnNode(mouseX, mouseY, AntColony.Factor.ZOMBIES);
 				panel.add(zombieHorde);
 				panel.validate();
 			}
@@ -147,6 +222,9 @@ public class UberFrame extends JFrame {
 				if(uber != null)
 					panel.remove(uber);
 				uber = new UberCar(mouseX, mouseY);
+				int node [] = findNode(mouseX, mouseY);
+				srcX = node[0];
+				srcY = node[1];
 				panel.add(uber);
 				panel.validate();
 				TSP tsp = new TSP();
@@ -158,6 +236,11 @@ public class UberFrame extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				int node [] = findNode(mouseX, mouseY);
+				desX = node[0];
+				desY = node[1];
+				System.out.println("SOURCE " + srcX + " - " + srcY);
+				System.out.println("DESTINATION " + desX + " - " + desY);
 				runAnts();
 			}
 		});
@@ -195,6 +278,20 @@ public class UberFrame extends JFrame {
 		});
 	}
 	
+	private int[] findNode(int mouseX, int mouseY){
+		int [] res = new int[2]; 
+		res[0] = mouseX < 40 ? 0 : 1 + (mouseX - 40) / 110;
+		res[1] = mouseY < 42 ? 0 : 1 + (mouseY - 42) / 110;
+		System.out.println("X " + res[0]);
+		System.out.println("Y " + res[1]);
+		return res;
+	}
+	
+	private void setElementOnNode(int mouseX, int mouseY, AntColony.Factor factor){
+		int node [] = findNode(mouseX, mouseY);
+		antCol.updateNears(node[0], node[1], factor);
+	}
+	
 	/*------------------------------------------------------------------*/
 
 	public void initAnts (int antcnt, double phero, TSP tsp, Random rand)
@@ -222,7 +319,7 @@ public class UberFrame extends JFrame {
 	{                             /* --- run the ants */
 	    if (this.antCol == null) return;
 	    int i=0;
-	    while(i<=100){
+	    while(i<=1000){
 	    	i+=1;
 	    	this.antCol.runAllAnts();     /* run all ants once */
 	    }

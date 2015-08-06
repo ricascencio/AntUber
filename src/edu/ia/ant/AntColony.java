@@ -1,5 +1,6 @@
 package edu.ia.ant;
 
+import java.util.List;
 import java.util.Random;
 
 /*--------------------------------------------------------------------*/
@@ -8,7 +9,7 @@ public class AntColony {
 
   /* --- instance variables --- */
   protected TSP        tsp;     /* traveling salesman problem */
-  protected int[][] dists;   /* distances between vertices */
+  protected List<NodeDistance> dists;   /* distances between vertices */
   protected double[][] nears;   /* nearness factors: d_ij^{-\alpha} */
   protected double[][] trail;   /* pheromone trail on edges */
   protected double[][] delta;   /* change of pheromone trail on edges */
@@ -36,6 +37,8 @@ public class AntColony {
   protected double     carFactor;
   protected double     zombieFactor;
   public static enum Factor {TAXI, CAR, ZOMBIES};
+  
+  private int src, dest;
 
   private   Random     rand;    /* random number generator */
   private   int[]      dsts;    /* buffer for destinations */
@@ -45,8 +48,8 @@ public class AntColony {
 
   public AntColony (TSP tsp, int antcnt, Random rand)
   {                             /* --- create an ant colony */
-    this.tsp     = tsp;         /* note traveling salesman problem */
-    this.dists   = tsp.dists;   /* and its distance matrix */
+    this.tsp     = tsp;         /* note traveling salesman problem */ 
+    this.dists   = tsp.nodeDists;   /* and its distance matrix */
     int size     = tsp.size();  /* create the trail matrices */
     this.nears   = new double[size][size];
     this.trail   = new double[size][size];
@@ -85,7 +88,15 @@ public class AntColony {
 
   /*------------------------------------------------------------------*/
 
-  public double getDist     (int i, int j) { return this.dists[i][j]; }
+  public double getDist     (int i, int j) {
+	  int index = dists.indexOf(new NodeDistance(i,j));
+	  double res = 0;
+	  if(index > -1){
+		  NodeDistance resNode = dists.get(index);
+		  res = resNode.getDistance();
+	  }
+	  return res; 
+  }
   public double getTrail    (int i, int j) { return this.trail[i][j]; }
   public double getTrailAvg ()             { return this.avg; }
   public double getTrailMax ()             { return this.max; }
@@ -95,31 +106,42 @@ public class AntColony {
 
   /*------------------------------------------------------------------*/
 
-  public void init () { this.init(-1); }
+  public void init(){this.init(-1);}
+  
+  public void init (double val) {  
+	  for(NodeDistance node : dists){
+		  this.nears[node.getSource()][node.getDestination()] = Math.pow(node.getDistance(), -this.beta);
+		  this.nears[node.getSource()][node.getDestination()] = val;
+	  }
+	  this.max = this.avg = val;
+	  this.bestlen = Double.MAX_VALUE;
+	  this.epoch = 0;
+  }
 
-  public void init (double val)
-  {                             /* --- initialize nearness and trail */
-    int    i, j;                /* loop variables */
-    double sum = 0;             /* sum of edge lengths */
+  /*public void init (double val)
+  {                              --- initialize nearness and trail 
+    int    i, j;                 loop variables 
+    double sum = 0;              sum of edge lengths 
 
     for (i = this.tour.length; --i >= 0; )
       for (j = this.tour.length; --j >= 0; )
-        sum += this.dists[i][j];/* compute the average tour length */
+        sum += this.dists[i][j]; compute the average tour length 
     this.avglen = sum /this.tour.length;
-    if (val <= 0) val = 1;      /* check and adapt initial value */
+    if (val <= 0) val = 1;       check and adapt initial value 
     for (i = this.tour.length; --i >= 0; ) {
       for (j = this.tour.length; --j >= 0; ) {
         this.nears[i][j] = Math.pow(this.dists[i][j], -this.beta);
-        this.trail[i][j] = val; /* compute nearness from distance */
-      }                         /* and set all trail elements */
-    }                           /* to the same value */
-    this.max = this.avg = val;  /* set maximal/average trail value */
+        this.trail[i][j] = val;  compute nearness from distance 
+      }                          and set all trail elements 
+    }                            to the same value 
+    this.max = this.avg = val;   set maximal/average trail value 
     this.bestlen = Double.MAX_VALUE;
-    this.epoch  = 0;            /* init. length of best tour */
-  }  /* init() */               /* and the epoch counter */
-
+    this.epoch  = 0;             init. length of best tour 
+  }   init()                 and the epoch counter 
+*/
   /*------------------------------------------------------------------*/
 
+  
   public void updateNears(int i, int j, Factor factor){
 	  double sum = 0.0;
 	  switch(factor){
@@ -133,7 +155,8 @@ public class AntColony {
 			  sum = zombieFactor;
 			  break;
 	  }
-	  this.nears[i][j] = Math.pow(this.dists[i][j] + sum, -this.beta);
+	  NodeDistance node = new NodeDistance(i, j);
+	  this.nears[i][j] = Math.pow(node.getDistance() + sum, -this.beta);
   }
   
   private static int find (double vec[], int n, double val)
@@ -179,7 +202,7 @@ public class AntColony {
     this.len = 0;               /* and the tour length */
 
     /* --- run the ant --- */
-    src = this.rand.nextInt(this.tour.length);
+    src = this.src;
     this.tour[0]      = src;    /* randomly select the vertex */
     this.visited[src] = true;   /* the ant starts from */
     for (i = 0; ++i < this.tour.length; ) {
@@ -203,10 +226,10 @@ public class AntColony {
         dst = this.dsts[j];     /* choose destination randomly */
       }                         /* based on the edge qualities */
       this.visited[dst] = true; /* mark the destination as visited */
-      this.len += this.dists[src][dst];
+      this.len += getDist(src, dst); 
       this.tour[i] = src = dst; /* sum the edge lengths and */
     }                           /* add the vertex to the tour */
-    this.len += this.dists[src][this.tour[0]];
+    this.len += getDist(src, this.tour[0]); //;this.dists[src][this.tour[0]];
 
     /* --- place pheromone --- */
     chg = this.avglen/this.len; /* compute amount of pheromone */
@@ -223,6 +246,8 @@ public class AntColony {
     int    i, j;                /* loop variables */
     double t, min;              /* new/minimal trail value */
     double stick;               /* stick factor for pheromone */
+    this.src = src;
+    this.dest = dest;
 
     /* --- initialize the edge qualities --- */
     for (i = this.delta.length; --i >= 0; ) {
