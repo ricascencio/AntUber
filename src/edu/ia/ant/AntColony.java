@@ -109,9 +109,10 @@ public class AntColony {
   public void init(){this.init(-1);}
   
   public void init (double val) {  
+	  if(val<=0) val=1;
 	  for(NodeDistance node : dists){
 		  this.nears[node.getSource()][node.getDestination()] = Math.pow(node.getDistance(), -this.beta);
-		  this.nears[node.getSource()][node.getDestination()] = val;
+		  this.trail[node.getSource()][node.getDestination()] = val;
 	  }
 	  this.max = this.avg = val;
 	  this.bestlen = Double.MAX_VALUE;
